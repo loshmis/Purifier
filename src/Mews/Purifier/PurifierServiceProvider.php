@@ -18,14 +18,11 @@ class PurifierServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		$this->package('mews/purifier');
+		$this->publishes([
+			__DIR__ . '/../../config/config.php' => config_path('publisher.php')
+		]);
 
-		$app = $this->app;
-
-	    $this->app->finish(function() use ($app)
-	    {
-
-	    });
+		$this->mergeConfigFrom(__DIR__ . '/../../config/config.php', 'publisher');
 	}
 
 	/**
