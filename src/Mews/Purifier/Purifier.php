@@ -42,17 +42,17 @@ class Purifier {
      * Returns the singleton instance of HTML Purifier. If no instance has
      * been created, a new instance will be created.
      *
-     *     $purifier = Purifier::instance();
+     *     $purifier = purifier.instance();
      *
      * @return  HTMLPurifier
      */
     public static function instance()
     {
-        if ( ! Purifier::$singleton)
+        if ( ! purifier.$singleton)
         {
             if ( ! class_exists('HTMLPurifier_Config', false))
             {
-                if (Config::get('purifier::config.preload'))
+                if (Config::get('purifier.preload'))
                 {
                     // Load the all of HTML Purifier right now.
                     // This increases performance with a slight hit to memory usage.
@@ -67,29 +67,29 @@ class Purifier {
             $config = HTMLPurifier_Config::createDefault();
 
             // Allow configuration to be modified
-            if ( ! Config::get('purifier::config.finalize'))
+            if ( ! Config::get('purifier.finalize'))
             {
                 $config->autoFinalize = false;
             }
 
             // Use the same character set as Laravel
-            $config->set('Core.Encoding', Config::get('purifier::config.encoding'));
+            $config->set('Core.Encoding', Config::get('purifier.encoding'));
 
-            if (is_array(Config::get('purifier::config.settings.default')))
+            if (is_array(Config::get('purifier.settings.default')))
             {
                 // Load the settings
-                $config->loadArray(Config::get('purifier::config.settings.default'));
+                $config->loadArray(Config::get('purifier.settings.default'));
             }
 
             // Configure additional options
-            $config = Purifier::configure($config);
-            Purifier::$configs['default'] = $config;
+            $config = purifier.configure($config);
+            purifier.$configs['default'] = $config;
 
             // Create the purifier instance
-            Purifier::$singleton = new HTMLPurifier($config);
+            purifier.$singleton = new HTMLPurifier($config);
         }
 
-        return Purifier::$singleton;
+        return purifier.$singleton;
     }
 
     /**
@@ -108,7 +108,7 @@ class Purifier {
     /**
      * Removes broken HTML and XSS from text using [HTMLPurifier](http://htmlpurifier.org/).
      *
-     *     $text = Purifier::clean($dirty_html);
+     *     $text = purifier.clean($dirty_html);
      *
      * The original content is returned with all broken HTML and XSS removed.
      *
@@ -123,32 +123,32 @@ class Purifier {
             foreach ($dirty as $key => $value)
             {
                 // Recursively clean arrays
-                $clean[$key] = Purifier::clean($value);
+                $clean[$key] = purifier.clean($value);
             }
         }
         else
         {
             // Load HTML Purifier
-            $purifier = Purifier::instance();
+            $purifier = purifier.instance();
 
             // Clean the HTML and return it
             if(is_array($config)) {
-                $c = HTMLPurifier_Config::inherit(Purifier::$configs['default']);
+                $c = HTMLPurifier_Config::inherit(purifier.$configs['default']);
                 $c->loadArray($config);
 
                 $clean = $purifier->purify($dirty, $c);
             } else if(is_string($config)) {
-                if(isset(Purifier::$configs[$config])) {
-                    $c = Purifier::$configs[$config];
+                if(isset(purifier.$configs[$config])) {
+                    $c = purifier.$configs[$config];
                 } else {
-                    $c = HTMLPurifier_Config::inherit(Purifier::$configs['default']);
-                    $c->loadArray(Config::get('purifier::config.settings.' . $config));
-                    Purifier::$configs[$config] = $c;
+                    $c = HTMLPurifier_Config::inherit(purifier.$configs['default']);
+                    $c->loadArray(Config::get('purifier.settings.' . $config));
+                    purifier.$configs[$config] = $c;
                 }
 
                 $clean = $purifier->purify($dirty, $c);
             } else {
-                $clean = $purifier->purify($dirty, Purifier::$configs['default']);
+                $clean = $purifier->purify($dirty, purifier.$configs['default']);
             }
         }
 
