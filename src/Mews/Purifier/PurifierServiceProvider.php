@@ -19,10 +19,10 @@ class PurifierServiceProvider extends ServiceProvider {
 	public function boot()
 	{
 		$this->publishes([
-			__DIR__ . '/../../config/config.php' => config_path('publisher.php')
+			__DIR__ . '/../../config/config.php' => config_path('purifier.php')
 		]);
 
-		$this->mergeConfigFrom(__DIR__ . '/../../config/config.php', 'publisher');
+		$this->mergeConfigFrom(__DIR__ . '/../../config/config.php', 'purifier');
 	}
 
 	/**
