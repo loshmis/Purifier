@@ -1,17 +1,17 @@
 # HTMLPurifier for Laravel 4
 
-A simple [Laravel 4](http://four.laravel.com/) service provider for including the [HTMLPurifier for Laravel 4](https://github.com/mewebstudio/purifier).
+A simple [Laravel 5](http://laravel.com/) service provider for including the [HTMLPurifier for Laravel 5](https://github.com/mewebstudio/purifier).
 
 ## Installation
 
 The HTMLPurifier Service Provider can be installed via [Composer](http://getcomposer.org) by requiring the
-`ezyang/htmlpurifier`, `mews/purifier` package and setting the `minimum-stability` to `dev` (required for Laravel 4) in your
+`ezyang/htmlpurifier`, `mews/purifier` package and setting the `minimum-stability` to `dev` (required for Laravel 5) in your
 project's `composer.json`.
 
 ```json
 {
     "require": {
-        "laravel/framework": "4.0.*",
+        "laravel/framework": "~5.0",
         "mews/purifier": "dev-master"
     },
     "minimum-stability": "dev"
@@ -45,18 +45,26 @@ Find the `aliases` key in `app/config/app.php`.
 
 ## Configuration
 
-To use your own settings, publish config.
+To use your own settings, you can publish configuration file to your application's config directory by running
 
-```$ php artisan config:publish mews/purifier```
+```$ php artisan vendor:publish```
 
-Config file `app/config/packages/mews/purifier/config.php`
+Make sure that you have added Purifier service provider before you have executed vendor:publish command.
+
+Example config file `app/config/purifier.php`
 
 ```php
 return array(
-    "settings" => array(
-        "default" => array(
-            "HTML.SafeIframe" => 'true',
-            "URI.SafeIframeRegexp" => "%^(http://|https://|//)(www.youtube.com/embed/|player.vimeo.com/video/)%",
+    'encoding' => 'UTF-8',
+    'finalize' => true,
+    'preload'  => false,
+    'settings' => array(
+        'default' => array(
+            'HTML.Doctype'             => 'XHTML 1.0 Strict',
+            'HTML.Allowed'             => 'div,b,strong,i,em,a[href|title],ul,ol,li,p[style],br,span[style],img[width|height|alt|src]',
+            'CSS.AllowedProperties'    => 'font,font-size,font-weight,font-style,font-family,text-decoration,padding-left,color,background-color,text-align',
+            'AutoFormat.AutoParagraph' => true,
+            'AutoFormat.RemoveEmpty'   => true,
         ),
         "titles" => array(
             'AutoFormat.AutoParagraph' => false,
